@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0c0e;
+    --surface: #141417;
+    --surface2: #1c1c21;
+    --border: #2a2a32;
+    --text: #e8e8ed;
+    --muted: #7a7a8a;
+    --accent: #f0c060;
+    --accent2: #60c0f0;
+    --danger: #f06060;
+    --success: #60c090;
+    --radius: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6; }
+
+  /* Layout */
+  header {
+    padding: 48px 48px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  }
+  header h1 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; letter-spacing: -2px; line-height: 1; }
+  header h1 span { color: var(--accent); }
+  header p { color: var(--muted); max-width: 280px; font-size: 13px; }
+  .count-badge { background: var(--accent); color: #000; font-family: 'DM Mono', monospace; font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+
+  main { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 140px); }
+  
+  nav { border-right: 1px solid var(--border); padding: 24px 0; position: sticky; top: 0; height: calc(100vh - 140px); overflow-y: auto; }
+  nav::-webkit-scrollbar { width: 4px; }
+  nav::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .nav-item { display: block; padding: 7px 24px; color: var(--muted); text-decoration: none; font-size: 12px; font-family: 'DM Mono', monospace; cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; }
+  .nav-item:hover { color: var(--text); border-left-color: var(--border); }
+  .nav-item.active { color: var(--accent); border-left-color: var(--accent); }
+
+  .gallery { padding: 32px 48px; display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; align-content: start; }
+
+  /* Component Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: #3a3a48; transform: translateY(-2px); }
+  .card-preview {
+    padding: 32px 24px;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-info { padding: 16px 20px; }
+  .card-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .card-desc { color: var(--muted); font-size: 12px; line-height: 1.5; }
+  .card-aliases { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px; }
+  .alias { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
+
+  /* ─── Component Styles ─── */
+
+  /* Button */
+  .btn { padding: 8px 18px; border-radius: var(--radius); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #ffd070; transform: translateY(-1px); }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--muted); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #ff7070; }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-sm { padding: 5px 12px; font-size: 11px; }
+  .btn-lg { padding: 12px 28px; font-size: 15px; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Badge */
+  .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; font-family: 'DM Mono', monospace; }
+  .badge-default { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+  .badge-accent { background: rgba(240,192,96,0.15); color: var(--accent); border: 1px solid rgba(240,192,96,0.3); }
+  .badge-success { background: rgba(96,192,144,0.15); color: var(--success); border: 1px solid rgba(96,192,144,0.3); }
+  .badge-danger { background: rgba(240,96,96,0.15); color: var(--danger); border: 1px solid rgba(240,96,96,0.3); }
+  .badge-info { background: rgba(96,192,240,0.15); color: var(--accent2); border: 1px solid rgba(96,192,240,0.3); }
+
+  /* Alert */
+  .alert { padding: 12px 16px; border-radius: var(--radius); font-size: 13px; display: flex; align-items: flex-start; gap: 10px; width: 100%; }
+  .alert-info { background: rgba(96,192,240,0.1); border: 1px solid rgba(96,192,240,0.3); color: var(--accent2); }
+  .alert-success { background: rgba(96,192,144,0.1); border: 1px solid rgba(96,192,144,0.3); color: var(--success); }
+  .alert-warning { background: rgba(240,192,96,0.1); border: 1px solid rgba(240,192,96,0.3); color: var(--accent); }
+  .alert-danger { background: rgba(240,96,96,0.1); border: 1px solid rgba(240,96,96,0.3); color: var(--danger); }
+
+  /* Avatar */
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .avatar-lg { width: 56px; height: 56px; font-size: 18px; }
+  .avatar-sm { width: 28px; height: 28px; font-size: 11px; }
+  .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+  /* Accordion */
+  .accordion { width: 100%; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .accordion-item { border-bottom: 1px solid var(--border); }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-trigger { width: 100%; text-align: left; padding: 12px 16px; background: none; border: none; color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+  .accordion-trigger:hover { background: rgba(255,255,255,0.03); }
+  .accordion-trigger .arrow { transition: transform 0.25s; font-size: 10px; color: var(--muted); }
+  .accordion-trigger.open .arrow { transform: rotate(180deg); }
+  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+  .accordion-content.open { max-height: 200px; }
+  .accordion-inner { padding: 0 16px 12px; color: var(--muted); font-size: 12px; }
+
+  /* Breadcrumbs */
+  .breadcrumbs { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .breadcrumbs a { color: var(--muted); text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--text); }
+  .breadcrumbs .sep { color: var(--border); }
+  .breadcrumbs .current { color: var(--text); }
+
+  /* Button Group */
+  .btn-group { display: flex; }
+  .btn-group .btn { border-radius: 0; border-right-width: 0; }
+  .btn-group .btn:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+  .btn-group .btn:last-child { border-radius: 0 var(--radius) var(--radius) 0; border-right-width: 1px; }
+
+  /* Card component preview */
+  .mini-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; min-width: 160px; }
+  .mini-card-img { height: 60px; background: linear-gradient(135deg, #2a2a3a, #1a1a2a); border-radius: 6px; margin-bottom: 10px; }
+
+  /* Carousel */
+  .carousel-wrap { width: 100%; overflow: hidden; border-radius: var(--radius); position: relative; }
+  .carousel-track { display: flex; transition: transform 0.35s cubic-bezier(.25,.46,.45,.94); }
+  .carousel-slide { min-width: 100%; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-family: 'Playfair Display', serif; }
+  .slide-1 { background: linear-gradient(135deg, #1a2a3a, #2a1a3a); color: var(--accent2); }
+  .slide-2 { background: linear-gradient(135deg, #2a1a1a, #1a2a1a); color: var(--accent); }
+  .slide-3 { background: linear-gradient(135deg, #1a2a1a, #1a1a2a); color: var(--success); }
+  .carousel-dots { display: flex; gap: 6px; margin-top: 8px; justify-content: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.2s; }
+  .dot.active { background: var(--accent); }
+
+  /* Checkbox */
+  .custom-check { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; }
+  .custom-check input { display: none; }
+  .check-box { width: 16px; height: 16px; border: 2px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .custom-check input:checked + .check-box { background: var(--accent); border-color: var(--accent); color: #000; }
+  .custom-check input:checked + .check-box::after { content: '✓'; font-size: 10px; font-weight: 700; }
+
+  /* Color Picker */
+  .color-swatch-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform 0.15s, border-color 0.15s; }
+  .color-swatch:hover { transform: scale(1.15); }
+  .color-swatch.selected { border-color: #fff; }
+
+  /* Combobox / Select */
+  .custom-select-wrap { position: relative; width: 180px; }
+  .custom-select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 32px 8px 12px; border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif; appearance: none; cursor: pointer; }
+  .custom-select:focus { outline: none; border-color: var(--accent); }
+  .select-arrow { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; font-size: 10px; }
+
+  /* Date input */
+  .date-input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif; }
+  .date-input:focus { outline: none; border-color: var(--accent); }
+
+  /* Drawer */
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; backdrop-filter: blur(2px); }
+  .drawer-overlay.open { display: block; }
+  .drawer-panel { position: fixed; top: 0; right: -400px; width: 360px; height: 100vh; background: var(--surface); border-left: 1px solid var(--border); z-index: 101; transition: right 0.35s cubic-bezier(.25,.46,.45,.94); padding: 32px 28px; overflow-y: auto; }
+  .drawer-panel.open { right: 0; }
+  .drawer-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; }
+
+  /* Dropdown Menu */
+  .dropdown-wrap { position: relative; display: inline-block; }
+  .dropdown-menu-panel { position: absolute; top: calc(100% + 6px); left: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); min-width: 160px; z-index: 10; box-shadow: 0 12px 40px rgba(0,0,0,0.5); display: none; overflow: hidden; }
+  .dropdown-menu-panel.open { display: block; animation: fadeIn 0.15s ease; }
+  .drop-item { padding: 9px 14px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+  .drop-item:hover { background: var(--surface2); }
+  .drop-sep { height: 1px; background: var(--border); }
+  .drop-item.danger { color: var(--danger); }
+
+  /* File */
+  .file-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 12px; font-size: 12px; }
+  .file-icon { font-size: 20px; }
+
+  /* Form */
+  .form-row { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+  .form-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-family: 'DM Mono', monospace; }
+  .form-input { background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: var(--radius); font-size: 13px; font-family: 'DM Sans', sans-serif; width: 100%; }
+  .form-input:focus { outline: none; border-color: var(--accent); }
+
+  /* Header preview */
+  .mini-header { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .mini-nav { display: flex; gap: 12px; }
+  .mini-nav a { font-size: 11px; color: var(--muted); text-decoration: none; }
+  .mini-nav a:hover { color: var(--text); }
+  .logo-text { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; }
+
+  /* Icon */
+  .icon-grid { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .icon-item { width: 40px; height: 40px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+  /* Link */
+  .demo-link { color: var(--accent2); text-decoration: none; border-bottom: 1px solid rgba(96,192,240,0.3); transition: border-color 0.15s; }
+  .demo-link:hover { border-color: var(--accent2); }
+
+  /* List */
+  .demo-list { list-style: none; width: 100%; }
+  .demo-list li { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; display: flex; align-items: center; gap: 8px; }
+  .demo-list li:last-child { border-bottom: none; }
+  .demo-list li::before { content: '→'; color: var(--accent); font-size: 10px; }
+
+  /* Modal */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; animation: fadeIn 0.15s ease; }
+  .modal-box { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 32px; max-width: 440px; width: 90%; position: relative; box-shadow: 0 24px 80px rgba(0,0,0,0.8); animation: scaleIn 0.2s ease; }
+  .modal-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+  .modal-body { color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .modal-footer { margin-top: 24px; display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; }
+
+  /* Navigation */
+  .mini-tabs-nav { display: flex; gap: 0; border-bottom: 1px solid var(--border); width: 100%; }
+  .nav-link { padding: 8px 14px; font-size: 12px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .nav-link:hover { color: var(--text); }
+  .nav-link.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Pagination */
+  .pagination { display: flex; gap: 4px; align-items: center; }
+  .page-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); background: none; transition: all 0.15s; }
+  .page-btn:hover { border-color: var(--muted); color: var(--text); }
+  .page-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+
+  /* Popover */
+  .popover-wrap { position: relative; display: inline-block; }
+  .popover-box { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; min-width: 180px; font-size: 12px; color: var(--text); box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 10; line-height: 1.5; }
+  .popover-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--border); }
+  .popover-box.open { display: block; animation: fadeIn 0.15s ease; }
+
+  /* Progress */
+  .progress-track { width: 100%; height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); border-radius: 4px; transition: width 0.5s ease; }
+
+  /* Progress Indicator / Steps */
+  .steps { display: flex; align-items: center; gap: 0; width: 100%; }
+  .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid var(--border); color: var(--muted); background: var(--bg); font-family: 'DM Mono', monospace; z-index: 1; position: relative; }
+  .step.done .step-circle { background: var(--success); border-color: var(--success); color: #000; }
+  .step.current .step-circle { background: var(--accent); border-color: var(--accent); color: #000; }
+  .step-label { font-size: 10px; color: var(--muted); margin-top: 4px; }
+  .step.done .step-label, .step.current .step-label { color: var(--text); }
+  .step-line { flex: 1; height: 2px; background: var(--border); margin-top: -14px; }
+  .step-line.done { background: var(--success); }
+
+  /* Quote */
+  .blockquote { border-left: 3px solid var(--accent); padding: 8px 16px; background: var(--bg); border-radius: 0 var(--radius) var(--radius) 0; font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; color: var(--text); line-height: 1.6; }
+  .blockquote footer { font-size: 11px; color: var(--muted); font-style: normal; font-family: 'DM Mono', monospace; margin-top: 6px; }
+
+  /* Radio */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+  .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; }
+  .radio-item input { display: none; }
+  .radio-circle { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .radio-item input:checked + .radio-circle { border-color: var(--accent); }
+  .radio-item input:checked + .radio-circle::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* Rating */
+  .star-rating { display: flex; gap: 4px; }
+  .star { font-size: 22px; cursor: pointer; color: var(--border); transition: color 0.1s; }
+  .star.active { color: var(--accent); }
+
+  /* Search */
+  .search-wrap { position: relative; width: 200px; }
+  .search-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 8px 12px 8px 34px; border-radius: 20px; font-size: 13px; font-family: 'DM Sans', sans-serif; }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
+
+  /* Segmented Control */
+  .segmented { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 3px; gap: 2px; }
+  .seg-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: none; background: none; color: var(--muted); transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .seg-btn:hover { color: var(--text); }
+  .seg-btn.active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+
+  /* Separator */
+  .separator { width: 100%; height: 1px; background: var(--border); }
+  .sep-label { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 11px; font-family: 'DM Mono', monospace; width: 100%; }
+  .sep-label::before, .sep-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Skeleton */
+  .skeleton { background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 4px; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  .skeleton-card { width: 140px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); }
+
+  /* Slider */
+  .slider-wrap { width: 180px; }
+  input[type=range] { width: 100%; appearance: none; height: 4px; border-radius: 2px; background: linear-gradient(90deg, var(--accent) var(--val, 60%), var(--border) var(--val, 60%)); cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 2px 6px rgba(0,0,0,0.5); }
+
+  /* Spinner */
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .spinner-sm { width: 16px; height: 16px; border-width: 2px; }
+  .spinner-lg { width: 48px; height: 48px; border-width: 4px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Stepper / Nudger */
+  .stepper { display: flex; align-items: center; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .stepper-btn { width: 36px; height: 36px; background: var(--bg); border: none; color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.1s; }
+  .stepper-btn:hover { background: var(--surface2); }
+  .stepper-val { width: 48px; text-align: center; font-family: 'DM Mono', monospace; font-size: 14px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); height: 36px; display: flex; align-items: center; justify-content: center; }
+
+  /* Table */
+  .mini-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .mini-table th { text-align: left; padding: 6px 10px; color: var(--muted); font-family: 'DM Mono', monospace; border-bottom: 1px solid var(--border); font-weight: 500; }
+  .mini-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .mini-table tr:last-child td { border-bottom: none; }
+  .mini-table tr:hover td { background: var(--surface2); }
+
+  /* Tabs */
+  .tabs-wrap { width: 100%; }
+  .tab-list { display: flex; border-bottom: 1px solid var(--border); }
+  .tab-btn { padding: 8px 16px; font-size: 12px; color: var(--muted); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { padding: 12px 0; font-size: 12px; color: var(--muted); display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Text Input / Textarea */
+  textarea.form-input { resize: vertical; min-height: 80px; font-family: 'DM Sans', sans-serif; }
+
+  /* Toast Container */
+  #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+  .toast { pointer-events: all; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; min-width: 260px; max-width: 340px; display: flex; align-items: center; gap: 10px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); animation: slideUp 0.3s ease; font-size: 13px; }
+  .toast.removing { animation: slideDown 0.3s ease forwards; }
+  .toast-icon { font-size: 16px; flex-shrink: 0; }
+  .toast-msg { flex: 1; }
+  .toast-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 14px; padding: 0; flex-shrink: 0; }
+  .toast-success { border-left: 3px solid var(--success); }
+  .toast-error { border-left: 3px solid var(--danger); }
+  .toast-warning { border-left: 3px solid var(--accent); }
+  .toast-info { border-left: 3px solid var(--accent2); }
+
+  /* Toggle */
+  .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+  .toggle { position: relative; width: 44px; height: 24px; }
+  .toggle input { display: none; }
+  .toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+  .toggle input:checked + .toggle-track { background: var(--accent); }
+  .toggle-thumb { position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; background: #fff; border-radius: 50%; transition: left 0.2s; pointer-events: none; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+  .toggle input:checked ~ .toggle-thumb { left: 23px; }
+
+  /* Tooltip */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-box { display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #fff; color: #000; border-radius: 6px; padding: 5px 10px; font-size: 11px; white-space: nowrap; box-shadow: 0 4px 16px rgba(0,0,0,0.3); z-index: 10; }
+  .tooltip-box::after { content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 5px solid transparent; border-top-color: #fff; }
+  .tooltip-wrap:hover .tooltip-box { display: block; animation: fadeIn 0.1s ease; }
+
+  /* Tree View */
+  .tree { font-size: 12px; font-family: 'DM Mono', monospace; }
+  .tree-item { padding: 3px 0; cursor: pointer; display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  .tree-item:hover { color: var(--text); }
+  .tree-children { padding-left: 18px; border-left: 1px dashed var(--border); margin-left: 8px; }
+  .tree-icon { color: var(--accent); font-size: 10px; }
+
+  /* Video */
+  .video-player { background: #000; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); width: 200px; }
+  .video-screen { height: 100px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; }
+  .video-controls { background: var(--surface); padding: 6px 10px; display: flex; align-items: center; gap: 8px; }
+  .video-progress { flex: 1; height: 3px; background: var(--border); border-radius: 2px; }
+  .video-progress-fill { height: 100%; width: 35%; background: var(--accent); border-radius: 2px; }
+  .video-time { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--muted); }
+
+  /* Visually Hidden example */
+  .visually-hidden-demo { display: flex; align-items: center; gap: 8px; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  .code-tag { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; color: var(--accent); }
+
+  /* Skip link */
+  .skip-link { position: relative; display: inline-block; }
+  .skip-link a { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent2); background: var(--bg); border: 1px solid var(--accent2); border-radius: var(--radius); padding: 4px 10px; text-decoration: none; }
+  .skip-link a:focus { outline: 2px solid var(--accent2); }
+
+  /* Empty State */
+  .empty-state { text-align: center; padding: 16px; }
+  .empty-state .empty-icon { font-size: 36px; margin-bottom: 8px; }
+  .empty-state .empty-title { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+  .empty-state .empty-desc { font-size: 11px; color: var(--muted); }
+
+  /* Heading */
+  .heading-demo h1 { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; }
+  .heading-demo h2 { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--muted); }
+  .heading-demo h3 { font-size: 14px; font-weight: 500; color: var(--muted); }
+
+  /* Hero */
+  .hero-preview { background: linear-gradient(135deg, #1a1a2e, #16213e); border-radius: var(--radius); padding: 24px; text-align: center; width: 100%; }
+  .hero-preview h2 { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; margin-bottom: 6px; }
+  .hero-preview p { color: var(--muted); font-size: 12px; }
+
+  /* Datepicker mini */
+  .mini-cal { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; font-size: 11px; font-family: 'DM Mono', monospace; }
+  .cal-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 500; color: var(--text); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+  .cal-day { text-align: center; padding: 3px; color: var(--muted); }
+  .cal-day.header { color: var(--muted); font-size: 10px; }
+  .cal-day.today { background: var(--accent); color: #000; border-radius: 4px; font-weight: 700; }
+  .cal-day:not(.header):not(.today):hover { background: var(--surface2); border-radius: 4px; cursor: pointer; }
+
+  /* Footer preview */
+  .footer-preview { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; width: 100%; }
+  .footer-preview .footer-grid { display: flex; gap: 32px; margin-bottom: 12px; }
+  .footer-preview h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  .footer-preview a { display: block; font-size: 11px; color: var(--muted); text-decoration: none; line-height: 1.8; }
+  .footer-preview .copy { font-size: 10px; color: var(--muted); border-top: 1px solid var(--border); padding-top: 10px; }
+
+  /* File upload */
+  .dropzone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 24px; text-align: center; cursor: pointer; transition: all 0.15s; }
+  .dropzone:hover { border-color: var(--accent); background: rgba(240,192,96,0.04); }
+  .dropzone-icon { font-size: 28px; margin-bottom: 6px; }
+  .dropzone-text { font-size: 12px; color: var(--muted); }
+
+  /* Fieldset */
+  fieldset.demo-fieldset { border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; width: 100%; }
+  fieldset.demo-fieldset legend { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; padding: 0 6px; }
+
+  /* Stack */
+  .stack-demo > * + * { margin-top: 10px; }
+  .stack-item { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 14px; font-size: 12px; color: var(--muted); }
+
+  /* Image */
+  .image-preview { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); width: 160px; height: 90px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #1a2a3a 0%, #3a1a2a 100%); font-size: 28px; }
+
+  /* Rich text editor mini */
+  .rte-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; width: 100%; }
+  .rte-toolbar { display: flex; gap: 2px; padding: 6px; border-bottom: 1px solid var(--border); background: var(--surface); }
+  .rte-tool { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border: none; background: none; color: var(--text); cursor: pointer; border-radius: 4px; font-size: 13px; }
+  .rte-tool:hover { background: var(--surface2); }
+  .rte-body { padding: 10px; min-height: 60px; font-size: 13px; color: var(--text); }
+
+  /* Animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scaleIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes slideDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
+
+  /* Responsive */
+  @media (max-width: 800px) {
+    main { grid-template-columns: 1fr; }
+    nav { display: none; }
+    .gallery { padding: 20px; grid-template-columns: 1fr; }
+    header { padding: 28px 20px; }
+    header h1 { font-size: 36px; }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Section Label */
+  .section-label { grid-column: 1/-1; font-family: 'DM Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); padding: 8px 0 0; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Component<br><span>Gallery</span></h1>
+    <p style="margin-top:8px">Every UI component, live and interactive. Click to explore.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+    <span class="count-badge">62 components</span>
+    <p style="color:var(--muted);font-size:12px;text-align:right">Built with vanilla HTML, CSS & JS<br>No frameworks. Pure craft.</p>
+  </div>
+</header>
+
+<main>
+  <nav id="sidebar">
+    <div class="nav-item" onclick="scrollTo('accordion')">Accordion</div>
+    <div class="nav-item" onclick="scrollTo('alert')">Alert</div>
+    <div class="nav-item" onclick="scrollTo('avatar')">Avatar</div>
+    <div class="nav-item" onclick="scrollTo('badge')">Badge</div>
+    <div class="nav-item" onclick="scrollTo('breadcrumbs')">Breadcrumbs</div>
+    <div class="nav-item" onclick="scrollTo('button')">Button</div>
+    <div class="nav-item" onclick="scrollTo('btn-group')">Button Group</div>
+    <div class="nav-item" onclick="scrollTo('card')">Card</div>
+    <div class="nav-item" onclick="scrollTo('carousel')">Carousel</div>
+    <div class="nav-item" onclick="scrollTo('checkbox')">Checkbox</div>
+    <div class="nav-item" onclick="scrollTo('colorpicker')">Color Picker</div>
+    <div class="nav-item" onclick="scrollTo('combobox')">Combobox</div>
+    <div class="nav-item" onclick="scrollTo('dateinput')">Date Input</div>
+    <div class="nav-item" onclick="scrollTo('datepicker')">Datepicker</div>
+    <div class="nav-item" onclick="scrollTo('drawer')">Drawer</div>
+    <div class="nav-item" onclick="scrollTo('dropdown')">Dropdown Menu</div>
+    <div class="nav-item" onclick="scrollTo('emptystate')">Empty State</div>
+    <div class="nav-item" onclick="scrollTo('fieldset')">Fieldset</div>
+    <div class="nav-item" onclick="scrollTo('file')">File</div>
+    <div class="nav-item" onclick="scrollTo('fileupload')">File Upload</div>
+    <div class="nav-item" onclick="scrollTo('footer')">Footer</div>
+    <div class="nav-item" onclick="scrollTo('form')">Form</div>
+    <div class="nav-item" onclick="scrollTo('header')">Header</div>
+    <div class="nav-item" onclick="scrollTo('heading')">Heading</div>
+    <div class="nav-item" onclick="scrollTo('hero')">Hero</div>
+    <div class="nav-item" onclick="scrollTo('icon')">Icon</div>
+    <div class="nav-item" onclick="scrollTo('image')">Image</div>
+    <div class="nav-item" onclick="scrollTo('label')">Label</div>
+    <div class="nav-item" onclick="scrollTo('link')">Link</div>
+    <div class="nav-item" onclick="scrollTo('list')">List</div>
+    <div class="nav-item" onclick="scrollTo('modal')">Modal</div>
+    <div class="nav-item" onclick="scrollTo('navigation')">Navigation</div>
+    <div class="nav-item" onclick="scrollTo('pagination')">Pagination</div>
+    <div class="nav-item" onclick="scrollTo('popover')">Popover</div>
+    <div class="nav-item" onclick="scrollTo('progressbar')">Progress Bar</div>
+    <div class="nav-item" onclick="scrollTo('progressindicator')">Progress Indicator</div>
+    <div class="nav-item" onclick="scrollTo('quote')">Quote</div>
+    <div class="nav-item" onclick="scrollTo('radio')">Radio Button</div>
+    <div class="nav-item" onclick="scrollTo('rating')">Rating</div>
+    <div class="nav-item" onclick="scrollTo('rte')">Rich Text Editor</div>
+    <div class="nav-item" onclick="scrollTo('search')">Search Input</div>
+    <div class="nav-item" onclick="scrollTo('segmented')">Segmented Control</div>
+    <div class="nav-item" onclick="scrollTo('select')">Select</div>
+    <div class="nav-item" onclick="scrollTo('separator')">Separator</div>
+    <div class="nav-item" onclick="scrollTo('skeleton')">Skeleton</div>
+    <div class="nav-item" onclick="scrollTo('skiplink')">Skip Link</div>
+    <div class="nav-item" onclick="scrollTo('slider')">Slider</div>
+    <div class="nav-item" onclick="scrollTo('spinner')">Spinner</div>
+    <div class="nav-item" onclick="scrollTo('stack')">Stack</div>
+    <div class="nav-item" onclick="scrollTo('stepper')">Stepper</div>
+    <div class="nav-item" onclick="scrollTo('table')">Table</div>
+    <div class="nav-item" onclick="scrollTo('tabs')">Tabs</div>
+    <div class="nav-item" onclick="scrollTo('textinput')">Text Input</div>
+    <div class="nav-item" onclick="scrollTo('textarea')">Textarea</div>
+    <div class="nav-item" onclick="scrollTo('toast')">Toast</div>
+    <div class="nav-item" onclick="scrollTo('toggle')">Toggle</div>
+    <div class="nav-item" onclick="scrollTo('tooltip')">Tooltip</div>
+    <div class="nav-item" onclick="scrollTo('treeview')">Tree View</div>
+    <div class="nav-item" onclick="scrollTo('video')">Video</div>
+    <div class="nav-item" onclick="scrollTo('visuallyhidden')">Visually Hidden</div>
+  </nav>
+
+  <div class="gallery">
+
+    <!-- ACCORDION -->
+    <div class="card" id="accordion">
+      <div class="card-preview" style="align-items:flex-start;padding:20px;">
+        <div class="accordion" style="width:100%">
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">What is an accordion? <span class="arrow">▼</span></button>
+            <div class="accordion-content"><div class="accordion-inner">A vertical stack of headings that reveal or hide content when clicked.</div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">When should I use one? <span class="arrow">▼</span></button>
+            <div class="accordion-content"><div class="accordion-inner">When you need to present a lot of content in a compact space, like FAQs or settings panels.</div></div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" onclick="toggleAccordion(this)">Any accessibility tips? <span class="arrow">▼</span></button>
+            <div class="accordion-content"><div class="accordion-inner">Use proper ARIA attributes: aria-expanded, aria-controls, and role="region".</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Accordion</div>
+        <div class="card-desc">A vertical stack of interactive headings that toggle visibility of further content.</div>
+        <div class="card-aliases"><span class="alias">Collapse</span><span class="alias">Disclosure</span><span class="alias">Expandable</span></div>
+      </div>
+    </div>
+
+    <!-- ALERT -->
+    <div class="card" id="alert">
+      <div class="card-preview" style="flex-direction:column;align-items:stretch;gap:8px;padding:16px;">
+        <div class="alert alert-info">ℹ️ <span>Your account sync is up to date.</span></div>
+        <div class="alert alert-success">✅ <span>Changes saved successfully.</span></div>
+        <div class="alert alert-warning">⚠️ <span>Storage is nearly full (90%).</span></div>
+        <div class="alert alert-danger">🚫 <span>Authentication failed. Please retry.</span></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Alert</div>
+        <div class="card-desc">Informing the user of important changes in a prominent way.</div>
+        <div class="card-aliases"><span class="alias">Notification</span><span class="alias">Callout</span><span class="alias">Banner</span></div>
+      </div>
+    </div>
+
+    <!-- AVATAR -->
+    <div class="card" id="avatar">
+      <div class="card-preview" style="gap:16px;">
+        <div class="avatar avatar-sm">JD</div>
+        <div class="avatar" style="background:#60c0f0;color:#000">MB</div>
+        <div class="avatar avatar-lg" style="background:#60c090;color:#000">SK</div>
+        <div class="avatar" style="background:var(--surface2);font-size:20px;">🐱</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Avatar</div>
+        <div class="card-desc">A graphical representation of a user: photo, illustration, or initials.</div>
+      </div>
+    </div>
+
+    <!-- BADGE -->
+    <div class="card" id="badge">
+      <div class="card-preview" style="flex-wrap:wrap;gap:8px;">
+        <span class="badge badge-default">Default</span>
+        <span class="badge badge-accent">New</span>
+        <span class="badge badge-success">Active</span>
+        <span class="badge badge-danger">Error</span>
+        <span class="badge badge-info">Info</span>
+        <span class="badge badge-accent">101</span>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Badge</div>
+        <div class="card-desc">A small label representing a status, property, or metadata.</div>
+        <div class="card-aliases"><span class="alias">Tag</span><span class="alias">Label</span><span class="alias">Chip</span></div>
+      </div>
+    </div>
+
+    <!-- BREADCRUMBS -->
+    <div class="card" id="breadcrumbs">
+      <div class="card-preview">
+        <div class="breadcrumbs">
+          <a href="#">Home</a><span class="sep">/</span>
+          <a href="#">Components</a><span class="sep">/</span>
+          <a href="#">Forms</a><span class="sep">/</span>
+          <span class="current">Breadcrumbs</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Breadcrumbs</div>
+        <div class="card-desc">A list of links showing the location of the current page in the navigational hierarchy.</div>
+        <div class="card-aliases"><span class="alias">Breadcrumb trail</span></div>
+      </div>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="card" id="button">
+      <div class="card-preview" style="flex-wrap:wrap;gap:8px;">
+        <button class="btn btn-primary">Primary</button>
+        <button class="btn btn-secondary">Secondary</button>
+        <button class="btn btn-danger">Danger</button>
+        <button class="btn btn-ghost">Ghost</button>
+        <button class="btn btn-primary btn-sm">Small</button>
+        <button class="btn btn-primary btn-lg">Large</button>
+        <button class="btn btn-secondary" disabled>Disabled</button>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Button</div>
+        <div class="card-desc">Triggers an action such as submitting a form or toggling an interface component.</div>
+      </div>
+    </div>
+
+    <!-- BUTTON GROUP -->
+    <div class="card" id="btn-group">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-sm">Left</button>
+          <button class="btn btn-secondary btn-sm">Center</button>
+          <button class="btn btn-secondary btn-sm">Right</button>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary btn-sm">Save</button>
+          <button class="btn btn-primary btn-sm">▾</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Button Group</div>
+        <div class="card-desc">A wrapper for multiple, related buttons.</div>
+        <div class="card-aliases"><span class="alias">Toolbar</span></div>
+      </div>
+    </div>
+
+    <!-- CARD -->
+    <div class="card" id="card">
+      <div class="card-preview" style="gap:12px;">
+        <div class="mini-card">
+          <div class="mini-card-img"></div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:3px">Card Title</div>
+          <div style="font-size:11px;color:var(--muted)">A brief description of this card's content and purpose.</div>
+        </div>
+        <div class="mini-card" style="min-width:130px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div class="avatar avatar-sm" style="background:#60c0f0;color:#000">AB</div><div><div style="font-size:11px;font-weight:600">Alice B.</div><div style="font-size:10px;color:var(--muted)">Designer</div></div></div>
+          <div style="font-size:11px;color:var(--muted)">Contact card</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Card</div>
+        <div class="card-desc">A container for content representing a single entity—contact, article, or task.</div>
+        <div class="card-aliases"><span class="alias">Tile</span></div>
+      </div>
+    </div>
+
+    <!-- CAROUSEL -->
+    <div class="card" id="carousel">
+      <div class="card-preview" style="flex-direction:column;gap:0;padding:0;padding-top:20px;padding-bottom:20px;">
+        <div style="width:80%;margin:0 auto;">
+          <div class="carousel-wrap">
+            <div class="carousel-track" id="ctrack">
+              <div class="carousel-slide slide-1">✦ Slide One</div>
+              <div class="carousel-slide slide-2">✦ Slide Two</div>
+              <div class="carousel-slide slide-3">✦ Slide Three</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-top:10px;">
+            <button class="btn btn-ghost btn-sm" onclick="carouselPrev()">←</button>
+            <div class="carousel-dots" id="cdots">
+              <div class="dot active" onclick="carouselGo(0)"></div>
+              <div class="dot" onclick="carouselGo(1)"></div>
+              <div class="dot" onclick="carouselGo(2)"></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" onclick="carouselNext()">→</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Carousel</div>
+        <div class="card-desc">Displays multiple slides of content with navigation controls.</div>
+        <div class="card-aliases"><span class="alias">Content slider</span></div>
+      </div>
+    </div>
+
+    <!-- CHECKBOX -->
+    <div class="card" id="checkbox">
+      <div class="card-preview" style="flex-direction:column;align-items:flex-start;gap:10px;">
+        <label class="custom-check"><input type="checkbox" checked><div class="check-box"></div>Dark mode enabled</label>
+        <label class="custom-check"><input type="checkbox"><div class="check-box"></div>Email notifications</label>
+        <label class="custom-check"><input type="checkbox"><div class="check-box"></div>Auto-save drafts</label>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Checkbox</div>
+        <div class="card-desc">An input for choosing from predefined options — binary or multi-select.</div>
+      </div>
+    </div>
+
+    <!-- COLOR PICKER -->
+    <div class="card" id="colorpicker">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="color-swatch-row">
+          <div class="color-swatch selected" style="background:#f0c060" onclick="selectColor(this,'#f0c060')"></div>
+          <div class="color-swatch" style="background:#60c0f0" onclick="selectColor(this,'#60c0f0')"></div>
+          <div class="color-swatch" style="background:#60c090" onclick="selectColor(this,'#60c090')"></div>
+          <div class="color-swatch" style="background:#f06060" onclick="selectColor(this,'#f06060')"></div>
+          <div class="color-swatch" style="background:#c060f0" onclick="selectColor(this,'#c060f0')"></div>
+          <div class="color-swatch" style="background:#f09060" onclick="selectColor(this,'#f09060')"></div>
+          <input type="color" value="#f0c060" id="colorInput" style="width:28px;height:28px;border-radius:50%;border:none;padding:0;cursor:pointer;background:none;" onchange="updateColorPreview(this.value)">
+        </div>
+        <div id="colorPreview" style="width:100%;height:32px;border-radius:var(--radius);background:#f0c060;transition:background 0.2s;"></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Color Picker</div>
+        <div class="card-desc">An input for choosing a color, from swatches or a native picker.</div>
+      </div>
+    </div>
+
+    <!-- COMBOBOX -->
+    <div class="card" id="combobox">
+      <div class="card-preview" style="flex-direction:column;gap:8px;width:100%;padding:16px;">
+        <div style="position:relative;width:100%;">
+          <input type="text" class="form-input" placeholder="Search frameworks…" id="comboInput" oninput="filterCombo()" onfocus="showCombo()" style="width:100%">
+          <div id="comboList" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);z-index:10;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.5);margin-top:4px;">
+            <div class="drop-item" onclick="pickCombo(this)">React</div>
+            <div class="drop-item" onclick="pickCombo(this)">Vue</div>
+            <div class="drop-item" onclick="pickCombo(this)">Svelte</div>
+            <div class="drop-item" onclick="pickCombo(this)">Angular</div>
+            <div class="drop-item" onclick="pickCombo(this)">Solid</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Combobox</div>
+        <div class="card-desc">A select with a free-text input to filter options.</div>
+        <div class="card-aliases"><span class="alias">Autocomplete</span><span class="alias">Autosuggest</span></div>
+      </div>
+    </div>
+
+    <!-- DATE INPUT -->
+    <div class="card" id="dateinput">
+      <div class="card-preview" style="flex-direction:column;gap:10px;">
+        <input type="date" class="date-input">
+        <input type="time" class="date-input">
+      </div>
+      <div class="card-info">
+        <div class="card-name">Date Input</div>
+        <div class="card-desc">A means of inputting a date, often as separate day/month/year fields.</div>
+      </div>
+    </div>
+
+    <!-- DATEPICKER -->
+    <div class="card" id="datepicker">
+      <div class="card-preview" style="padding:12px;">
+        <div class="mini-cal">
+          <div class="cal-header">
+            <span>◀</span><span>March 2026</span><span>▶</span>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-day header">Su</div><div class="cal-day header">Mo</div><div class="cal-day header">Tu</div><div class="cal-day header">We</div><div class="cal-day header">Th</div><div class="cal-day header">Fr</div><div class="cal-day header">Sa</div>
+            <div class="cal-day"></div><div class="cal-day">2</div><div class="cal-day">3</div><div class="cal-day">4</div><div class="cal-day">5</div><div class="cal-day">6</div><div class="cal-day">7</div>
+            <div class="cal-day">8</div><div class="cal-day">9</div><div class="cal-day">10</div><div class="cal-day">11</div><div class="cal-day">12</div><div class="cal-day">13</div><div class="cal-day">14</div>
+            <div class="cal-day">15</div><div class="cal-day">16</div><div class="cal-day">17</div><div class="cal-day">18</div><div class="cal-day">19</div><div class="cal-day">20</div><div class="cal-day">21</div>
+            <div class="cal-day">22</div><div class="cal-day">23</div><div class="cal-day">24</div><div class="cal-day">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div>
+            <div class="cal-day today">1</div><div class="cal-day">29</div><div class="cal-day">30</div><div class="cal-day">31</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Datepicker</div>
+        <div class="card-desc">A visual calendar-based date chooser.</div>
+        <div class="card-aliases"><span class="alias">Calendar</span><span class="alias">Datetime picker</span></div>
+      </div>
+    </div>
+
+    <!-- DRAWER -->
+    <div class="card" id="drawer">
+      <div class="card-preview">
+        <button class="btn btn-primary" onclick="openDrawer()">Open Drawer →</button>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Drawer</div>
+        <div class="card-desc">A panel which slides out from the edge of the screen.</div>
+        <div class="card-aliases"><span class="alias">Tray</span><span class="alias">Flyout</span><span class="alias">Sheet</span></div>
+      </div>
+    </div>
+
+    <!-- DROPDOWN MENU -->
+    <div class="card" id="dropdown">
+      <div class="card-preview" style="overflow:visible;">
+        <div class="dropdown-wrap">
+          <button class="btn btn-secondary" onclick="toggleDropdown()">Options ▾</button>
+          <div class="dropdown-menu-panel" id="dropMenu">
+            <div class="drop-item">✏️ Edit</div>
+            <div class="drop-item">📋 Duplicate</div>
+            <div class="drop-item">📤 Export</div>
+            <div class="drop-sep"></div>
+            <div class="drop-item danger">🗑️ Delete</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Dropdown Menu</div>
+        <div class="card-desc">Options hidden by default, revealed by a button click. Not a form input — shows actions.</div>
+        <div class="card-aliases"><span class="alias">Select menu</span></div>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div class="card" id="emptystate">
+      <div class="card-preview">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No results found</div>
+          <div class="empty-desc">Try adjusting your search or filter to find what you're looking for.</div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:10px">Clear filters</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Empty State</div>
+        <div class="card-desc">An indication that there is no data, often with an alternative action.</div>
+      </div>
+    </div>
+
+    <!-- FIELDSET -->
+    <div class="card" id="fieldset">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <fieldset class="demo-fieldset">
+          <legend>Account Settings</legend>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+            <label class="custom-check"><input type="checkbox" checked><div class="check-box"></div>Receive newsletters</label>
+            <label class="custom-check"><input type="checkbox"><div class="check-box"></div>Marketing emails</label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Fieldset</div>
+        <div class="card-desc">A wrapper for grouping related form fields with a legend label.</div>
+      </div>
+    </div>
+
+    <!-- FILE -->
+    <div class="card" id="file">
+      <div class="card-preview" style="flex-direction:column;gap:8px;">
+        <div class="file-chip"><span class="file-icon">📄</span><div><div style="font-size:12px;font-weight:500">report-q3.pdf</div><div style="font-size:10px;color:var(--muted)">2.4 MB · PDF</div></div><a href="#" style="color:var(--accent);font-size:11px;margin-left:8px;text-decoration:none">↓</a></div>
+        <div class="file-chip"><span class="file-icon">🖼️</span><div><div style="font-size:12px;font-weight:500">hero-banner.png</div><div style="font-size:10px;color:var(--muted)">840 KB · PNG</div></div><a href="#" style="color:var(--accent);font-size:11px;margin-left:8px;text-decoration:none">↓</a></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">File</div>
+        <div class="card-desc">A representation of a file — uploaded attachment or downloadable content.</div>
+        <div class="card-aliases"><span class="alias">Attachment</span><span class="alias">Download</span></div>
+      </div>
+    </div>
+
+    <!-- FILE UPLOAD -->
+    <div class="card" id="fileupload">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <div class="dropzone" onclick="showToast('File picker would open here','info')">
+          <div class="dropzone-icon">☁️</div>
+          <div class="dropzone-text"><strong>Click to upload</strong> or drag and drop<br><span style="font-size:11px">PNG, JPG, PDF up to 10MB</span></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">File Upload</div>
+        <div class="card-desc">An input which allows users to upload files from their device.</div>
+        <div class="card-aliases"><span class="alias">Dropzone</span><span class="alias">File input</span></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="card" id="footer">
+      <div class="card-preview" style="padding:12px;width:100%;">
+        <div class="footer-preview">
+          <div class="footer-grid">
+            <div><h4>Product</h4><a href="#">Features</a><a href="#">Pricing</a><a href="#">Roadmap</a></div>
+            <div><h4>Company</h4><a href="#">About</a><a href="#">Blog</a><a href="#">Careers</a></div>
+            <div><h4>Legal</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+          </div>
+          <div class="copy">© 2026 Acme Corp. All rights reserved.</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Footer</div>
+        <div class="card-desc">Appears at the bottom of a page, displaying legal info and related links.</div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="card" id="form">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <div style="display:flex;flex-direction:column;gap:10px;width:100%;">
+          <div class="form-row">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="you@example.com">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Password</label>
+            <input class="form-input" type="password" placeholder="••••••••">
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Form submitted!','success')" style="width:100%;">Sign In</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Form</div>
+        <div class="card-desc">A grouping of input controls that allow a user to submit information.</div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="card" id="header">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <div class="mini-header">
+          <div class="logo-text">Acme</div>
+          <div class="mini-nav">
+            <a href="#">Home</a><a href="#">Docs</a><a href="#">Pricing</a><a href="#">Login</a>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Header</div>
+        <div class="card-desc">Appears across the top of all pages, usually containing the site name and main navigation.</div>
+      </div>
+    </div>
+
+    <!-- HEADING -->
+    <div class="card" id="heading">
+      <div class="card-preview" style="flex-direction:column;align-items:flex-start;gap:6px;padding:20px;">
+        <div class="heading-demo">
+          <h1>Heading One</h1>
+          <h2>Heading Two</h2>
+          <h3>Heading Three</h3>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Heading</div>
+        <div class="card-desc">A title or caption used to introduce a new section of content.</div>
+      </div>
+    </div>
+
+    <!-- HERO -->
+    <div class="card" id="hero">
+      <div class="card-preview" style="padding:12px;width:100%;">
+        <div class="hero-preview">
+          <h2>Build Faster,<br>Ship Better.</h2>
+          <p style="margin:8px 0 12px">The modern toolkit for every team.</p>
+          <button class="btn btn-primary btn-sm">Get Started</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Hero</div>
+        <div class="card-desc">A large banner, usually one of the first items on a page, often with a full-width image.</div>
+        <div class="card-aliases"><span class="alias">Jumbotron</span><span class="alias">Banner</span></div>
+      </div>
+    </div>
+
+    <!-- ICON -->
+    <div class="card" id="icon">
+      <div class="card-preview">
+        <div class="icon-grid">
+          <div class="icon-item" title="Home">🏠</div>
+          <div class="icon-item" title="Search">🔍</div>
+          <div class="icon-item" title="Settings">⚙️</div>
+          <div class="icon-item" title="User">👤</div>
+          <div class="icon-item" title="Bell">🔔</div>
+          <div class="icon-item" title="Star">⭐</div>
+          <div class="icon-item" title="Chat">💬</div>
+          <div class="icon-item" title="Heart">❤️</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Icon</div>
+        <div class="card-desc">A graphic symbol designed to visually indicate the purpose of an interface element.</div>
+      </div>
+    </div>
+
+    <!-- IMAGE -->
+    <div class="card" id="image">
+      <div class="card-preview" style="gap:12px;">
+        <div class="image-preview">🌌</div>
+        <div class="image-preview" style="background:linear-gradient(135deg,#1a3a1a,#3a3a1a)">🌿</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Image</div>
+        <div class="card-desc">An element for embedding images with proper alt text and sizing.</div>
+        <div class="card-aliases"><span class="alias">Picture</span></div>
+      </div>
+    </div>
+
+    <!-- LABEL -->
+    <div class="card" id="label">
+      <div class="card-preview" style="flex-direction:column;gap:12px;width:100%;padding:20px;">
+        <div class="form-row">
+          <label class="form-label">Email address</label>
+          <input class="form-input" placeholder="user@example.com">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Full name <span style="color:var(--danger)">*</span></label>
+          <input class="form-input" placeholder="Jane Doe">
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Label</div>
+        <div class="card-desc">A text label for form inputs, improving accessibility and usability.</div>
+        <div class="card-aliases"><span class="alias">Form label</span></div>
+      </div>
+    </div>
+
+    <!-- LINK -->
+    <div class="card" id="link">
+      <div class="card-preview" style="flex-direction:column;gap:10px;align-items:flex-start;padding:24px;">
+        <a class="demo-link" href="#">External link →</a>
+        <a class="demo-link" href="#" style="color:var(--accent);border-color:rgba(240,192,96,0.3)">Anchor link</a>
+        <a class="demo-link" href="#" style="color:var(--success);border-color:rgba(96,192,144,0.3)">Visited link</a>
+        <a class="demo-link" href="#" style="text-decoration:none;border:none;color:var(--muted)">Subtle link</a>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Link</div>
+        <div class="card-desc">A reference to a resource — external (another page) or internal (same document).</div>
+        <div class="card-aliases"><span class="alias">Anchor</span><span class="alias">Hyperlink</span></div>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="card" id="list">
+      <div class="card-preview" style="width:100%;padding:16px;">
+        <ul class="demo-list" style="width:100%">
+          <li>Unordered list item one</li>
+          <li>Unordered list item two</li>
+          <li>Unordered list item three</li>
+          <li style="border-bottom:none">Unordered list item four</li>
+        </ul>
+      </div>
+      <div class="card-info">
+        <div class="card-name">List</div>
+        <div class="card-desc">Groups a collection of related items — unordered, ordered, or description lists.</div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div class="card" id="modal">
+      <div class="card-preview">
+        <button class="btn btn-primary" onclick="openModal()">Open Modal</button>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Modal</div>
+        <div class="card-desc">An interface element that appears over other content, requiring user interaction.</div>
+        <div class="card-aliases"><span class="alias">Dialog</span><span class="alias">Popup</span></div>
+      </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="card" id="navigation">
+      <div class="card-preview" style="flex-direction:column;width:100%;padding:16px;gap:12px;">
+        <div class="mini-tabs-nav" id="mainNav">
+          <div class="nav-link active" onclick="setNav(this)">Dashboard</div>
+          <div class="nav-link" onclick="setNav(this)">Projects</div>
+          <div class="nav-link" onclick="setNav(this)">Team</div>
+          <div class="nav-link" onclick="setNav(this)">Reports</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Navigation</div>
+        <div class="card-desc">A container for navigation links to other pages or elements within the current page.</div>
+        <div class="card-aliases"><span class="alias">Nav</span><span class="alias">Menu</span></div>
+      </div>
+    </div>
+
+    <!-- PAGINATION -->
+    <div class="card" id="pagination">
+      <div class="card-preview">
+        <div class="pagination" id="paginationEl">
+          <button class="page-btn" onclick="setPage(event, 'prev')">‹</button>
+          <button class="page-btn" onclick="setPage(event, 1)">1</button>
+          <button class="page-btn active" onclick="setPage(event, 2)">2</button>
+          <button class="page-btn" onclick="setPage(event, 3)">3</button>
+          <button class="page-btn" onclick="setPage(event, 4)">4</button>
+          <button class="page-btn" onclick="setPage(event, 5)">5</button>
+          <button class="page-btn" onclick="setPage(event, 'next')">›</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Pagination</div>
+        <div class="card-desc">Splits information over multiple pages and provides controls to navigate between them.</div>
+      </div>
+    </div>
+
+    <!-- POPOVER -->
+    <div class="card" id="popover">
+      <div class="card-preview" style="overflow:visible;padding:40px 20px 20px;">
+        <div class="popover-wrap">
+          <button class="btn btn-secondary" onclick="togglePopover()">More info ℹ️</button>
+          <div class="popover-box" id="popoverBox">
+            <strong style="display:block;margin-bottom:4px">Popover Title</strong>
+            This is a popover with interactive content. Click outside to dismiss.
+            <div style="margin-top:8px;display:flex;gap:6px;"><button class="btn btn-primary btn-sm" onclick="togglePopover()">Got it</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Popover</div>
+        <div class="card-desc">Pops up from another element over other content, triggered by click, can contain interactive elements.</div>
+      </div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div class="card" id="progressbar">
+      <div class="card-preview" style="flex-direction:column;gap:10px;width:100%;padding:24px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:2px;"><span>Uploading…</span><span id="progressPct">68%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:68%"></div></div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:4px;">
+          <button class="btn btn-ghost btn-sm" onclick="animateProgress()">Animate</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Progress Bar</div>
+        <div class="card-desc">A horizontal bar indicating completion status of a long-running task.</div>
+        <div class="card-aliases"><span class="alias">Progress</span></div>
+      </div>
+    </div>
+
+    <!-- PROGRESS INDICATOR -->
+    <div class="card" id="progressindicator">
+      <div class="card-preview" style="padding:20px;width:100%;">
+        <div class="steps">
+          <div class="step done">
+            <div class="step-circle">✓</div>
+            <div class="step-label">Account</div>
+          </div>
+          <div class="step-line done"></div>
+          <div class="step done">
+            <div class="step-circle">✓</div>
+            <div class="step-label">Details</div>
+          </div>
+          <div class="step-line done"></div>
+          <div class="step current">
+            <div class="step-circle">3</div>
+            <div class="step-label">Payment</div>
+          </div>
+          <div class="step-line"></div>
+          <div class="step">
+            <div class="step-circle">4</div>
+            <div class="step-label">Confirm</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Progress Indicator</div>
+        <div class="card-desc">A representation of user's progress through a series of discrete steps.</div>
+        <div class="card-aliases"><span class="alias">Stepper</span><span class="alias">Steps</span><span class="alias">Timeline</span></div>
+      </div>
+    </div>
+
+    <!-- QUOTE -->
+    <div class="card" id="quote">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <blockquote class="blockquote">
+          Design is not just what it looks like. Design is how it works.
+          <footer>— Steve Jobs</footer>
+        </blockquote>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Quote</div>
+        <div class="card-desc">Displays a quotation from a person or outside source, or highlights a passage (pull quote).</div>
+        <div class="card-aliases"><span class="alias">Pull quote</span><span class="alias">Block quote</span></div>
+      </div>
+    </div>
+
+    <!-- RADIO -->
+    <div class="card" id="radio">
+      <div class="card-preview" style="flex-direction:column;align-items:flex-start;gap:4px;padding:20px;">
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="r1" checked><div class="radio-circle"></div>Standard Plan</label>
+          <label class="radio-item"><input type="radio" name="r1"><div class="radio-circle"></div>Pro Plan</label>
+          <label class="radio-item"><input type="radio" name="r1"><div class="radio-circle"></div>Enterprise Plan</label>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Radio Button</div>
+        <div class="card-desc">Allows a user to select a single option from a list of predefined options.</div>
+        <div class="card-aliases"><span class="alias">Radio</span><span class="alias">Radio group</span></div>
+      </div>
+    </div>
+
+    <!-- RATING -->
+    <div class="card" id="rating">
+      <div class="card-preview" style="flex-direction:column;gap:8px;">
+        <div class="star-rating" id="starRating">
+          <span class="star active" onclick="setRating(1)">★</span>
+          <span class="star active" onclick="setRating(2)">★</span>
+          <span class="star active" onclick="setRating(3)">★</span>
+          <span class="star active" onclick="setRating(4)">★</span>
+          <span class="star" onclick="setRating(5)">★</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);" id="ratingLabel">4 out of 5 stars</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Rating</div>
+        <div class="card-desc">Lets users see and/or set a star rating for a product or other item.</div>
+      </div>
+    </div>
+
+    <!-- RICH TEXT EDITOR -->
+    <div class="card" id="rte">
+      <div class="card-preview" style="padding:12px;width:100%;">
+        <div class="rte-wrap">
+          <div class="rte-toolbar">
+            <button class="rte-tool" title="Bold"><b>B</b></button>
+            <button class="rte-tool" title="Italic"><i>I</i></button>
+            <button class="rte-tool" title="Underline"><u>U</u></button>
+            <button class="rte-tool" title="Link">🔗</button>
+            <button class="rte-tool" title="List">☰</button>
+            <button class="rte-tool" title="Image">🖼</button>
+          </div>
+          <div class="rte-body" contenteditable="true">Edit this rich text content here. Try selecting text and applying <b>formatting</b>.</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Rich Text Editor</div>
+        <div class="card-desc">An interface for editing rich text (with formatting) through a WYSIWYG interface.</div>
+        <div class="card-aliases"><span class="alias">RTE</span><span class="alias">WYSIWYG</span></div>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="card" id="search">
+      <div class="card-preview">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" placeholder="Search components…">
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Search Input</div>
+        <div class="card-desc">Allows users to find content by entering a search term.</div>
+        <div class="card-aliases"><span class="alias">Search</span></div>
+      </div>
+    </div>
+
+    <!-- SEGMENTED CONTROL -->
+    <div class="card" id="segmented">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="segmented" id="seg1">
+          <button class="seg-btn active" onclick="setSeg(this,'seg1')">Day</button>
+          <button class="seg-btn" onclick="setSeg(this,'seg1')">Week</button>
+          <button class="seg-btn" onclick="setSeg(this,'seg1')">Month</button>
+        </div>
+        <div class="segmented" id="seg2">
+          <button class="seg-btn active" onclick="setSeg(this,'seg2')">Grid</button>
+          <button class="seg-btn" onclick="setSeg(this,'seg2')">List</button>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Segmented Control</div>
+        <div class="card-desc">A hybrid of button group, radio buttons, and tabs — switches between options or views.</div>
+        <div class="card-aliases"><span class="alias">Toggle button group</span></div>
+      </div>
+    </div>
+
+    <!-- SELECT -->
+    <div class="card" id="select">
+      <div class="card-preview" style="flex-direction:column;gap:10px;">
+        <div class="custom-select-wrap">
+          <select class="custom-select">
+            <option>Choose a color…</option>
+            <option>🟡 Yellow</option>
+            <option>🔵 Blue</option>
+            <option>🟢 Green</option>
+            <option>🔴 Red</option>
+          </select>
+          <span class="select-arrow">▼</span>
+        </div>
+        <div class="custom-select-wrap">
+          <select class="custom-select">
+            <option>Sort by: Newest</option>
+            <option>Sort by: Oldest</option>
+            <option>Sort by: Name</option>
+          </select>
+          <span class="select-arrow">▼</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Select</div>
+        <div class="card-desc">A form input for selecting a value from a scrollable list of predefined options.</div>
+        <div class="card-aliases"><span class="alias">Dropdown</span></div>
+      </div>
+    </div>
+
+    <!-- SEPARATOR -->
+    <div class="card" id="separator">
+      <div class="card-preview" style="flex-direction:column;gap:12px;width:100%;padding:20px;">
+        <div class="separator"></div>
+        <div class="sep-label">or continue with</div>
+        <div style="display:flex;gap:12px;align-items:center;">
+          <div style="font-size:12px;color:var(--muted)">Left content</div>
+          <div style="width:1px;height:30px;background:var(--border)"></div>
+          <div style="font-size:12px;color:var(--muted)">Right content</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Separator</div>
+        <div class="card-desc">A visual divider between two elements, typically a horizontal or vertical line.</div>
+        <div class="card-aliases"><span class="alias">Divider</span><span class="alias">Horizontal rule</span></div>
+      </div>
+    </div>
+
+    <!-- SKELETON -->
+    <div class="card" id="skeleton">
+      <div class="card-preview" style="gap:16px;">
+        <div class="skeleton-card">
+          <div class="skeleton" style="height:48px;margin-bottom:8px;"></div>
+          <div class="skeleton" style="height:10px;margin-bottom:5px;width:90%;"></div>
+          <div class="skeleton" style="height:10px;margin-bottom:5px;width:70%;"></div>
+          <div class="skeleton" style="height:10px;width:50%;"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="skeleton" style="width:40px;height:40px;border-radius:50%;"></div>
+          <div>
+            <div class="skeleton" style="height:10px;width:80px;margin-bottom:5px;"></div>
+            <div class="skeleton" style="height:10px;width:55px;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Skeleton</div>
+        <div class="card-desc">A placeholder layout for content which hasn't loaded yet, built of animated grey boxes.</div>
+        <div class="card-aliases"><span class="alias">Skeleton loader</span></div>
+      </div>
+    </div>
+
+    <!-- SKIP LINK -->
+    <div class="card" id="skiplink">
+      <div class="card-preview" style="flex-direction:column;gap:8px;align-items:flex-start;padding:20px;">
+        <div class="skip-link"><a href="#main-content">Skip to main content</a></div>
+        <div class="skip-link"><a href="#navigation">Skip to navigation</a></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Tab into the preview to see focus styles</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Skip Link</div>
+        <div class="card-desc">Links for skipping to another section of a page, primarily for keyboard users.</div>
+      </div>
+    </div>
+
+    <!-- SLIDER -->
+    <div class="card" id="slider">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="slider-wrap">
+          <input type="range" min="0" max="100" value="60" oninput="updateSlider(this)" style="--val:60%">
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;font-family:'DM Mono',monospace"><span>0</span><span id="sliderVal">60</span><span>100</span></div>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" min="0" max="100" value="30" oninput="updateSlider(this)" style="--val:30%">
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Slider</div>
+        <div class="card-desc">A form control for choosing a value within a preset range.</div>
+        <div class="card-aliases"><span class="alias">Range input</span></div>
+      </div>
+    </div>
+
+    <!-- SPINNER -->
+    <div class="card" id="spinner">
+      <div class="card-preview" style="gap:20px;">
+        <div class="spinner spinner-sm"></div>
+        <div class="spinner"></div>
+        <div class="spinner spinner-lg"></div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><div class="spinner spinner-sm" style="border-top-color:var(--accent2)"></div>Loading…</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Spinner</div>
+        <div class="card-desc">A visual indicator that a background process is happening and the interface isn't ready.</div>
+        <div class="card-aliases"><span class="alias">Loader</span><span class="alias">Loading</span></div>
+      </div>
+    </div>
+
+    <!-- STACK -->
+    <div class="card" id="stack">
+      <div class="card-preview" style="flex-direction:column;width:100%;padding:16px;">
+        <div class="stack-demo">
+          <div class="stack-item">Component A</div>
+          <div class="stack-item">Component B</div>
+          <div class="stack-item">Component C</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Stack</div>
+        <div class="card-desc">A wrapper component that adds consistent margin between stacked child components.</div>
+      </div>
+    </div>
+
+    <!-- STEPPER (Nudger) -->
+    <div class="card" id="stepper">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="stepper">
+          <button class="stepper-btn" onclick="stepperChange('s1',-1)">−</button>
+          <div class="stepper-val" id="s1">3</div>
+          <button class="stepper-btn" onclick="stepperChange('s1',1)">+</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Quantity selector</div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Stepper</div>
+        <div class="card-desc">A control for editing a numeric value with increment/decrement buttons.</div>
+        <div class="card-aliases"><span class="alias">Nudger</span><span class="alias">Counter</span><span class="alias">Quantity</span></div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card" id="table">
+      <div class="card-preview" style="padding:12px;width:100%;overflow-x:auto;">
+        <table class="mini-table">
+          <thead>
+            <tr><th>Name ↕</th><th>Role</th><th>Status</th><th>Joined</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Alice Chen</td><td>Designer</td><td><span class="badge badge-success">Active</span></td><td>2024-01</td></tr>
+            <tr><td>Bob Kim</td><td>Engineer</td><td><span class="badge badge-success">Active</span></td><td>2024-03</td></tr>
+            <tr><td>Carol Lee</td><td>PM</td><td><span class="badge badge-default">Away</span></td><td>2023-11</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Table</div>
+        <div class="card-desc">Displays large amounts of data in rows and columns; a 'Data Table' adds sorting and filtering.</div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="card" id="tabs">
+      <div class="card-preview" style="flex-direction:column;align-items:stretch;width:100%;padding:12px;">
+        <div class="tabs-wrap">
+          <div class="tab-list">
+            <button class="tab-btn active" onclick="setTab(this,'tabs-wrap',0)">Overview</button>
+            <button class="tab-btn" onclick="setTab(this,'tabs-wrap',1)">Details</button>
+            <button class="tab-btn" onclick="setTab(this,'tabs-wrap',2)">History</button>
+          </div>
+          <div class="tab-panel active">Overview content — a summary of this item and its key details.</div>
+          <div class="tab-panel">Detailed information including specifications, metadata, and related items.</div>
+          <div class="tab-panel">A log of changes and events for this item over time.</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Tabs</div>
+        <div class="card-desc">Navigates between multiple panels, reducing clutter in a limited space.</div>
+        <div class="card-aliases"><span class="alias">Tabbed interface</span></div>
+      </div>
+    </div>
+
+    <!-- TEXT INPUT -->
+    <div class="card" id="textinput">
+      <div class="card-preview" style="flex-direction:column;gap:10px;width:100%;padding:20px;">
+        <input class="form-input" type="text" placeholder="Default input…">
+        <input class="form-input" type="text" value="With a value" style="border-color:var(--accent)">
+        <input class="form-input" type="text" placeholder="Disabled input" disabled style="opacity:0.4">
+      </div>
+      <div class="card-info">
+        <div class="card-name">Text Input</div>
+        <div class="card-desc">A form control that accepts a single line of text.</div>
+      </div>
+    </div>
+
+    <!-- TEXTAREA -->
+    <div class="card" id="textarea">
+      <div class="card-preview" style="padding:16px;width:100%;">
+        <textarea class="form-input" placeholder="Type your message here…" rows="4" style="width:100%"></textarea>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Textarea</div>
+        <div class="card-desc">A form control for editing multi-line text content.</div>
+        <div class="card-aliases"><span class="alias">Textbox</span><span class="alias">Text box</span></div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="card" id="toast">
+      <div class="card-preview" style="flex-wrap:wrap;gap:8px;">
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Changes saved successfully!','success')">✅ Success</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Something went wrong.','error')">❌ Error</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Your storage is 90% full.','warning')">⚠️ Warning</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('A new update is available.','info')">ℹ️ Info</button>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Toast</div>
+        <div class="card-desc">A type of alert appearing in a layer above content, similar to a push notification.</div>
+        <div class="card-aliases"><span class="alias">Snackbar</span></div>
+      </div>
+    </div>
+
+    <!-- TOGGLE -->
+    <div class="card" id="toggle">
+      <div class="card-preview" style="flex-direction:column;gap:12px;">
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          <span style="font-size:13px">Dark mode</span>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          <span style="font-size:13px">Notifications</span>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle"><input type="checkbox" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          <span style="font-size:13px">Analytics</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Toggle</div>
+        <div class="card-desc">A control used to switch between two states: often on or off.</div>
+        <div class="card-aliases"><span class="alias">Switch</span><span class="alias">Lightswitch</span></div>
+      </div>
+    </div>
+
+    <!-- TOOLTIP -->
+    <div class="card" id="tooltip">
+      <div class="card-preview" style="gap:20px;flex-wrap:wrap;">
+        <div class="tooltip-wrap">
+          <button class="btn btn-secondary btn-sm">Hover me</button>
+          <div class="tooltip-box">This is a helpful tooltip!</div>
+        </div>
+        <div class="tooltip-wrap">
+          <span style="border-bottom:1px dashed var(--muted);cursor:help;font-size:13px">What is this?</span>
+          <div class="tooltip-box">An extra context description for confused users.</div>
+        </div>
+        <div class="tooltip-wrap">
+          <button class="btn btn-ghost btn-sm">⚙️</button>
+          <div class="tooltip-box">Settings</div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Tooltip</div>
+        <div class="card-desc">Displays a description or extra information, usually on hover.</div>
+        <div class="card-aliases"><span class="alias">Toggletip</span></div>
+      </div>
+    </div>
+
+    <!-- TREE VIEW -->
+    <div class="card" id="treeview">
+      <div class="card-preview" style="flex-direction:column;align-items:flex-start;padding:16px;width:100%;">
+        <div class="tree">
+          <div class="tree-item" onclick="this.nextSibling.style.display=this.nextSibling.style.display==='none'?'':'none'"><span class="tree-icon">▶</span> 📁 src</div>
+          <div class="tree-children">
+            <div class="tree-item"><span class="tree-icon">▶</span> 📁 components</div>
+            <div class="tree-children">
+              <div class="tree-item" style="color:var(--accent2)">📄 Button.tsx</div>
+              <div class="tree-item" style="color:var(--accent2)">📄 Modal.tsx</div>
+            </div>
+            <div class="tree-item" style="color:var(--accent2)">📄 App.tsx</div>
+            <div class="tree-item" style="color:var(--accent2)">📄 index.ts</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Tree View</div>
+        <div class="card-desc">Displays nested hierarchical information such as a directory structure.</div>
+      </div>
+    </div>
+
+    <!-- VIDEO -->
+    <div class="card" id="video">
+      <div class="card-preview">
+        <div class="video-player">
+          <div class="video-screen" id="videoScreen" onclick="toggleVideo()">▶️</div>
+          <div class="video-controls">
+            <button class="stepper-btn" style="width:20px;height:20px;font-size:12px;" onclick="toggleVideo()" id="videoPlayBtn">▶</button>
+            <div class="video-progress"><div class="video-progress-fill" id="videoProgressFill"></div></div>
+            <span class="video-time">0:35</span>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Video</div>
+        <div class="card-desc">Used for displaying video content, often with playback controls.</div>
+        <div class="card-aliases"><span class="alias">Video player</span></div>
+      </div>
+    </div>
+
+    <!-- VISUALLY HIDDEN -->
+    <div class="card" id="visuallyhidden">
+      <div class="card-preview" style="flex-direction:column;gap:12px;padding:16px;">
+        <div class="visually-hidden-demo">
+          <button class="btn btn-secondary btn-sm" aria-label="Close dialog">✕</button>
+          <span style="font-size:12px;color:var(--muted)">← No visible label, but screen readers say "Close dialog"</span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;"><span>Uses:</span> <span class="code-tag">.sr-only</span> or <span class="code-tag">aria-label</span></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Visually Hidden</div>
+        <div class="card-desc">Invisible text providing extra context for users of assistive technology.</div>
+        <div class="card-aliases"><span class="alias">Screenreader only</span></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Global Overlays -->
+<div id="toast-container"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Modal Dialog</div>
+    <div class="modal-body">
+      This is a modal dialog. It appears above all other content and requires the user to interact with it before returning to the main interface.
+      <br><br>
+      Click outside or press the button below to close it.
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="closeModal();showToast('Confirmed!','success')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer-panel" id="drawerPanel">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px;">Navigation Drawer</div>
+  <div style="color:var(--muted);font-size:13px;margin-bottom:24px;">A panel sliding in from the edge of the screen.</div>
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <div class="drop-item" style="padding:12px;border-radius:var(--radius);">🏠 Home</div>
+    <div class="drop-item" style="padding:12px;border-radius:var(--radius);">📁 Projects</div>
+    <div class="drop-item" style="padding:12px;border-radius:var(--radius);">👤 Profile</div>
+    <div class="drop-item" style="padding:12px;border-radius:var(--radius);">⚙️ Settings</div>
+  </div>
+  <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--border);margin-top:40px;">
+    <button class="btn btn-ghost" onclick="closeDrawer()" style="width:100%">Close Drawer</button>
+  </div>
+</div>
+
+<script>
+// ACCORDION
+function toggleAccordion(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.contains('open');
+  btn.closest('.accordion').querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+  btn.closest('.accordion').querySelectorAll('.accordion-trigger').forEach(b => b.classList.remove('open'));
+  if (!isOpen) { content.classList.add('open'); btn.classList.add('open'); }
+}
+
+// CAROUSEL
+let cIdx = 0;
+function carouselGo(i) {
+  cIdx = i;
+  document.getElementById('ctrack').style.transform = `translateX(-${i*100}%)`;
+  document.querySelectorAll('.dot').forEach((d,j) => d.classList.toggle('active', j===i));
+}
+function carouselNext() { carouselGo((cIdx+1)%3); }
+function carouselPrev() { carouselGo((cIdx+2)%3); }
+
+// TOAST
+function showToast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const icons = { success:'✅', error:'❌', warning:'⚠️', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span><span class="toast-msg">${msg}</span><button class="toast-close" onclick="removeToast(this.parentNode)">✕</button>`;
+  c.appendChild(t);
+  setTimeout(() => removeToast(t), 4000);
+}
+function removeToast(el) {
+  if (!el || !el.parentNode) return;
+  el.classList.add('removing');
+  setTimeout(() => el.remove(), 300);
+}
+
+// MODAL
+function openModal() { document.getElementById('modalOverlay').classList.add('open'); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// DRAWER
+function openDrawer() { document.getElementById('drawerOverlay').classList.add('open'); document.getElementById('drawerPanel').classList.add('open'); }
+function closeDrawer() { document.getElementById('drawerOverlay').classList.remove('open'); document.getElementById('drawerPanel').classList.remove('open'); }
+
+// DROPDOWN
+function toggleDropdown() {
+  const m = document.getElementById('dropMenu');
+  m.classList.toggle('open');
+  if (m.classList.contains('open')) {
+    document.addEventListener('click', function close(e) { if (!m.contains(e.target) && !e.target.matches('[onclick="toggleDropdown()"]')) { m.classList.remove('open'); document.removeEventListener('click', close); } });
+  }
+}
+
+// POPOVER
+function togglePopover() {
+  const p = document.getElementById('popoverBox');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) {
+    setTimeout(() => document.addEventListener('click', function c(e) { if(!p.contains(e.target)){p.classList.remove('open');document.removeEventListener('click',c);} }), 10);
+  }
+}
+
+// TABS
+function setTab(btn, wrapId, idx) {
+  const wrap = btn.closest('.tabs-wrap');
+  wrap.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
+  wrap.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+// NAVIGATION
+function setNav(el) {
+  document.querySelectorAll('#mainNav .nav-link').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// PAGINATION
+let currentPage = 2;
+function setPage(e, page) {
+  const nums = [1,2,3,4,5];
+  if (page === 'prev') page = Math.max(1, currentPage - 1);
+  if (page === 'next') page = Math.min(5, currentPage + 1);
+  currentPage = page;
+  document.querySelectorAll('#paginationEl .page-btn').forEach((btn, i) => {
+    if (i === 0 || i === 6) return;
+    btn.classList.toggle('active', nums[i-1] === currentPage);
+  });
+}
+
+// SEGMENTED
+function setSeg(btn, id) {
+  document.querySelectorAll(`#${id} .seg-btn`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// RATING
+let currentRating = 4;
+function setRating(n) {
+  currentRating = n;
+  document.querySelectorAll('#starRating .star').forEach((s,i) => s.classList.toggle('active', i < n));
+  document.getElementById('ratingLabel').textContent = `${n} out of 5 stars`;
+}
+document.querySelectorAll('#starRating .star').forEach((s, i) => {
+  s.addEventListener('mouseover', () => document.querySelectorAll('#starRating .star').forEach((x,j) => x.classList.toggle('active', j<=i)));
+  s.addEventListener('mouseout', () => setRating(currentRating));
+});
+
+// PROGRESS
+function animateProgress() {
+  let v = 0;
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressPct').textContent = '0%';
+  const iv = setInterval(() => {
+    v += 2;
+    document.getElementById('progressFill').style.width = v + '%';
+    document.getElementById('progressPct').textContent = v + '%';
+    if (v >= 100) { clearInterval(iv); showToast('Upload complete!','success'); }
+  }, 30);
+}
+
+// SLIDER
+function updateSlider(input) {
+  const v = input.value;
+  input.style.setProperty('--val', v + '%');
+  document.getElementById('sliderVal').textContent = v;
+}
+
+// STEPPER
+function stepperChange(id, delta) {
+  const el = document.getElementById(id);
+  el.textContent = Math.max(0, parseInt(el.textContent) + delta);
+}
+
+// COLOR PICKER
+function selectColor(el, color) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('colorPreview').style.background = color;
+  document.getElementById('colorInput').value = color;
+}
+function updateColorPreview(color) {
+  document.getElementById('colorPreview').style.background = color;
+}
+
+// COMBOBOX
+let comboOpen = false;
+function showCombo() {
+  document.getElementById('comboList').style.display = 'block';
+  setTimeout(() => document.addEventListener('click', hideCombo), 10);
+}
+function hideCombo(e) {
+  if (!document.getElementById('comboList').contains(e?.target)) {
+    document.getElementById('comboList').style.display = 'none';
+    document.removeEventListener('click', hideCombo);
+  }
+}
+function filterCombo() {
+  const v = document.getElementById('comboInput').value.toLowerCase();
+  document.getElementById('comboList').style.display = 'block';
+  document.querySelectorAll('#comboList .drop-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(v) ? '' : 'none';
+  });
+}
+function pickCombo(el) {
+  document.getElementById('comboInput').value = el.textContent;
+  document.getElementById('comboList').style.display = 'none';
+}
+
+// NAV SIDEBAR SCROLL
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// VIDEO fake
+let videoPlaying = false;
+let videoInterval = null;
+let videoPos = 35;
+function toggleVideo() {
+  videoPlaying = !videoPlaying;
+  document.getElementById('videoPlayBtn').textContent = videoPlaying ? '⏸' : '▶';
+  document.getElementById('videoScreen').textContent = videoPlaying ? '⏸' : '▶️';
+  if (videoPlaying) {
+    videoInterval = setInterval(() => {
+      videoPos = Math.min(100, videoPos + 1);
+      document.getElementById('videoProgressFill').style.width = videoPos + '%';
+      if (videoPos >= 100) { videoPlaying = false; clearInterval(videoInterval); document.getElementById('videoPlayBtn').textContent='▶'; document.getElementById('videoScreen').textContent='▶️'; videoPos=0; }
+    }, 100);
+  } else { clearInterval(videoInterval); }
+}
+
+// Intersection Observer for sidebar active
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const id = e.target.id;
+      document.querySelectorAll('.nav-item').forEach(n => {
+        const isMatch = n.getAttribute('onclick')?.includes(`'${id}'`);
+        n.classList.toggle('active', isMatch);
+      });
+    }
+  });
+}, { threshold: 0.5, rootMargin: '0px 0px -50% 0px' });
+document.querySelectorAll('.card[id]').forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
